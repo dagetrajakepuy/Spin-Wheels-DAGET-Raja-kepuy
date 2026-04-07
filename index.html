@@ -1,12 +1,34 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h2>Spin Berhadiah</h2>
+<head>
+<title>Spin Berhadiah</title>
+<style>
+body { text-align:center; font-family: Arial; }
+#wheel {
+  margin:20px auto;
+  width:200px;
+  height:200px;
+  border-radius:50%;
+  border:5px solid black;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+}
+button { padding:10px 20px; }
+</style>
+</head>
 
-<input id="user" placeholder="No HP">
+<body>
+
+<h2>🎡 Spin Berhadiah</h2>
+
+<input id="user" placeholder="Masukkan No HP"><br><br>
 <button onclick="spin()">SPIN</button>
 
-<p id="hasil"></p>
+<div id="wheel">🎡</div>
+
+<h3 id="hasil"></h3>
 
 <script>
 let data = JSON.parse(localStorage.getItem("data") || "{}");
@@ -19,11 +41,19 @@ function spin(){
  if(data[u]) return alert("Udah spin!");
  if(Object.keys(data).length >= 10) return alert("Kuota habis!");
 
- let h = hadiah[Math.floor(Math.random()*hadiah.length)];
- data[u]=h;
- localStorage.setItem("data", JSON.stringify(data));
+ let wheel = document.getElementById("wheel");
+ wheel.innerText = "⏳";
 
- document.getElementById("hasil").innerText = "Dapat Rp "+h;
+ setTimeout(() => {
+   let h = hadiah[Math.floor(Math.random()*hadiah.length)];
+
+   data[u]=h;
+   localStorage.setItem("data", JSON.stringify(data));
+
+   wheel.innerText = "🎉";
+   document.getElementById("hasil").innerText = "Selamat! Dapat Rp " + h;
+
+ }, 2000);
 }
 </script>
 
