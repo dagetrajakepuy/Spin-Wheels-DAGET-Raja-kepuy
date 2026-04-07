@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Spin Berhadiah</title>
+<style>
+body { text-align:center; font-family: Arial; }
+
+#wheel {
+  margin: 20px auto;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 10px solid black;
+  overflow: hidden;
+  transition: transform 4s cubic-bezier(0.2,0.8,0.2,1);
+}
+
+.slice {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  transform-origin: 100% 100%;
+}
+
+.pointer {
+  width: 0;
+  height: 0;
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-bottom: 35px solid black;
+  margin: auto;
+}
+
+button { padding:12px 25px; font-size:18px; }
+</style>
+</head>
+
+<body>
+
+<h2>🎡 Spin Berhadiah</h2>
+
+<input id="user" placeholder="Masukkan No HP"><br><br>
+<button onclick="spin()">SPIN</button>
+
+<div class="pointer"></div>
+<div id="wheel"></div>
+
+<h3 id="hasil"></h3>
+
+<script>
+
+// peluang (10rb jarang banget)
+const pool = [
+100,100,100,100,100,100,
+200,200,200,200,
+500,500,500,
+1000,1000,
+2000,
+5000,
+10000
+];
+
+const display = [100,200,500,1000,2000,5000,10000];
+
+let data = JSON.parse(localStorage.getItem("data") || "{}");
+let usedDevices = JSON.parse(localStorage.getItem("device") || "[]");
+
+let wheel = document.getElementById("wheel");
+
+const colors = ["#f1c40f","#e74c3c","#3498db","#2ecc71","#9b59b6","#e67e22","#1abc9c"];
+let deg = 360 / display.length;
+
+for(let i=0;i<display.length;i++){
+  let d = document.createElement("div");
+  d.className = "slice";
+  d.style.background = colors[i];
+  d.style.transform = `rotate(${i*deg}deg) skewY(${90-deg}deg)`;
+  wheel.appendChild(d);
+}
+
+let angle = 0;
+
+function spin(){
+ let u = document.getElementById("user").value;
+
+ if(!u) return alert("Isi No HP!");
+
+ // 🔒 cek nomor
+ if(data[u]) return alert("Nomor ini sudah digunakan!");
+
+ // 🔒 cek device
+ if(usedDevices.includes("used")) return alert("Device ini sudah dipakai!");
+
+ // 🚫 limit 500 orang
+ if(Object.keys(data).length >= 500) return alert("Kuota habis!");
+
+ let hadiah = pool[Math.floor(Math.random()*pool.length)];
+ let index = display.indexOf(hadiah);
+
+ let putaran = 6 * 360;
+ let posisi = index * deg;
+
+ angle += putaran + (360 - posisi);
+
+ wheel.style.transform = "rotate(" + angle + "deg)";
+
+ setTimeout(()=>{
+   data[u] = hadiah;
+   localStorage.setItem("data", JSON.stringify(data));
+
+   usedDevices.push("used");
+   localStorage.setItem("device", JSON.stringify(usedDevices));
+
+   document.getElementById("hasil").innerText =
+   "🎉 Selamat! Dapat Rp " + hadiah;
+ },4000);
+}
+</script>
+
+</body>
+</html>
