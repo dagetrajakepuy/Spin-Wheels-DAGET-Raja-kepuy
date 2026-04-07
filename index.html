@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Spin Berhadiah</h2>
+
+<input id="user" placeholder="No HP">
+<button onclick="spin()">SPIN</button>
+
+<p id="hasil"></p>
+
+<script>
+let data = JSON.parse(localStorage.getItem("data") || "{}");
+let hadiah = [100,200,500,1000,2000,5000,10000];
+
+function spin(){
+ let u = document.getElementById("user").value;
+
+ if(!u) return alert("Isi No HP!");
+ if(data[u]) return alert("Udah spin!");
+ if(Object.keys(data).length >= 10) return alert("Kuota habis!");
+
+ let h = hadiah[Math.floor(Math.random()*hadiah.length)];
+ data[u]=h;
+ localStorage.setItem("data", JSON.stringify(data));
+
+ document.getElementById("hasil").innerText = "Dapat Rp "+h;
+}
+</script>
+
+</body>
+</html>
